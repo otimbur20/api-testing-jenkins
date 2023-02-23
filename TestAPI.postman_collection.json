@@ -1,0 +1,438 @@
+{
+	"info": {
+		"_postman_id": "ade28ed2-4904-4575-9c84-28a5feba3c03",
+		"name": "Test API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23704123"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+							"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"token\", jsonData.access_token);",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"{{username}}\", \n\"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{env}}.anypoint.mulesoft.com/accounts/login",
+					"protocol": "https",
+					"host": [
+						"{{env}}",
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"accounts",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProfileInfo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"id\", jsonData.id);",
+							"postman.setEnvironmentVariable(\"organizationId\", jsonData.organizationId);",
+							"postman.setEnvironmentVariable(\"groupId\",jsonData.groupId)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{env}}.{{url}}/accounts/api/profile",
+					"protocol": "https",
+					"host": [
+						"{{env}}",
+						"{{url}}"
+					],
+					"path": [
+						"accounts",
+						"api",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CheckEmntyAsset",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"postman.setEnvironmentVariable(\"assetId\", jsonData.assetId);",
+							"",
+							"let assetName = jsonData.find(key => key.assetId === \"create-asset-test\")",
+							"",
+							"pm.test(\"Asset Id should be undefined  \", () => {",
+							"if(jsonData.length === 0 ){",
+							"    return undefined",
+							"}",
+							"else{",
+							" pm.expect(assetName).to.equal(undefined)",
+							"}});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{env}}.anypoint.mulesoft.com/exchange/api/v2/assets?search={{assetId}}&types=api-group&types=connector&types=custom&types=data-weave-library&types=evented-api&types=example&types=extension&types=graphql&types=http-api&types=policy&types=raml-fragment&types=rest-api&types=ruleset&types=soap-api&types=template&status=development&status=published&status=deprecated&domain=&&rootOrganizationId=a4b25129-00a1-42a7-a513-cba7fb01ab75&offset=0&limit=20&sharedWithMe=",
+					"protocol": "https",
+					"host": [
+						"{{env}}",
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"exchange",
+						"api",
+						"v2",
+						"assets"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "{{assetId}}"
+						},
+						{
+							"key": "types",
+							"value": "api-group"
+						},
+						{
+							"key": "types",
+							"value": "connector"
+						},
+						{
+							"key": "types",
+							"value": "custom"
+						},
+						{
+							"key": "types",
+							"value": "data-weave-library"
+						},
+						{
+							"key": "types",
+							"value": "evented-api"
+						},
+						{
+							"key": "types",
+							"value": "example"
+						},
+						{
+							"key": "types",
+							"value": "extension"
+						},
+						{
+							"key": "types",
+							"value": "graphql"
+						},
+						{
+							"key": "types",
+							"value": "http-api"
+						},
+						{
+							"key": "types",
+							"value": "policy"
+						},
+						{
+							"key": "types",
+							"value": "raml-fragment"
+						},
+						{
+							"key": "types",
+							"value": "rest-api"
+						},
+						{
+							"key": "types",
+							"value": "ruleset"
+						},
+						{
+							"key": "types",
+							"value": "soap-api"
+						},
+						{
+							"key": "types",
+							"value": "template"
+						},
+						{
+							"key": "status",
+							"value": "development"
+						},
+						{
+							"key": "status",
+							"value": "published"
+						},
+						{
+							"key": "status",
+							"value": "deprecated"
+						},
+						{
+							"key": "domain",
+							"value": ""
+						},
+						{
+							"key": null,
+							"value": null
+						},
+						{
+							"key": "rootOrganizationId",
+							"value": "a4b25129-00a1-42a7-a513-cba7fb01ab75"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						},
+						{
+							"key": "sharedWithMe",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateAsset",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Successful Method Created\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Asset was created  \", () => {",
+							" pm.expect(jsonData.assetId).to.equal(\"create-asset-test\")",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "organizationId",
+							"value": "{{organizationId}}",
+							"type": "text"
+						},
+						{
+							"key": "assetId",
+							"value": "{{name}}",
+							"type": "text"
+						},
+						{
+							"key": "version",
+							"value": "1.0.0",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "{{name}}",
+							"type": "text"
+						},
+						{
+							"key": "apiVersion",
+							"value": "v1",
+							"type": "text"
+						},
+						{
+							"key": "classifier",
+							"value": "http",
+							"type": "text"
+						},
+						{
+							"key": "groupId",
+							"value": "{{organizationId}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{env}}.anypoint.mulesoft.com/exchange/api/v1/assets",
+					"protocol": "https",
+					"host": [
+						"{{env}}",
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"exchange",
+						"api",
+						"v1",
+						"assets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteAsset",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful DELETE\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([204]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-delete-type",
+						"value": "hard-delete",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "https://{{env}}.anypoint.mulesoft.com/exchange/api/v2/assets/{{organizationId}}/{{name}}/1.0.0",
+					"protocol": "https",
+					"host": [
+						"{{env}}",
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"exchange",
+						"api",
+						"v2",
+						"assets",
+						"{{organizationId}}",
+						"{{name}}",
+						"1.0.0"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
